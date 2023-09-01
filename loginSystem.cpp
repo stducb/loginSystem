@@ -1,20 +1,71 @@
-// loginSystem.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
 #include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+bool isLoggedIn(const string& username, const string& password)
+{
+    ifstream read("Accounts\\" + username + ".txt");
+    if (!read.is_open()) {
+        return false;
+    }
+
+    string un, pw;
+    getline(read, un);
+    getline(read, pw);
+
+    return (un == username && pw == password);
+}
+
+void registerUser()
+{
+    string username, password;
+
+    cout << "Select a username: ";
+    cin >> username;
+    cout << "Select a password: ";
+    cin >> password;
+
+    ofstream file("Accounts\\" + username + ".txt");
+    if (!file) {
+        cerr << "Error creating user file." << endl;
+        return;
+    }
+
+    file << username << endl << password;
+    file.close();
+
+    cout << "Registration successful!" << endl;
+}
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    int choice;
+
+    cout << "1: Register\n2: Login\nYour choice: ";
+    cin >> choice;
+
+    if (choice == 1) {
+        registerUser();
+    }
+    else if (choice == 2) {
+        string username, password;
+
+        cout << "Enter username: ";
+        cin >> username;
+        cout << "Enter password: ";
+        cin >> password;
+
+        bool status = isLoggedIn(username, password);
+
+        if (!status) {
+            cout << "False Login!" << endl;
+        }
+        else {
+            cout << "Successfully logged in!" << endl;
+        }
+    }
+
+    return 0;
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
